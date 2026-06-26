@@ -12,6 +12,7 @@ export const roadmapCatalog = [
         order: 1,
         subtopics: ['DNS & Name Servers', 'HTTP Requests & Response Codes', 'Domain Registration & Hosting Models'],
         externalResources: [
+          { title: 'Frontend Developer Roadmap', sourceName: 'roadmap.sh', url: 'https://roadmap.sh/frontend' },
           { title: 'How the Web Works', sourceName: 'MDN Web Docs', url: 'https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/How_the_Web_works' },
           { title: 'HTTP Overview and Specifications', sourceName: 'MDN Web Docs', url: 'https://developer.mozilla.org/en-US/docs/Web/HTTP' }
         ]
@@ -63,6 +64,7 @@ export const roadmapCatalog = [
         order: 1,
         subtopics: ['Event-driven asynchronous I/O', 'Node Package Manager syntax', 'Environment configurations'],
         externalResources: [
+          { title: 'Backend Developer Roadmap', sourceName: 'roadmap.sh', url: 'https://roadmap.sh/backend' },
           { title: 'Node.js Developer Guide', sourceName: 'NodeJS.org Reference', url: 'https://nodejs.org/en/docs' }
         ]
       },
@@ -112,6 +114,7 @@ export const roadmapCatalog = [
         order: 1,
         subtopics: ['POSIX standard commands', 'Bash script variables', 'SSH and key exchange methods'],
         externalResources: [
+          { title: 'DevOps Roadmap', sourceName: 'roadmap.sh', url: 'https://roadmap.sh/devops' },
           { title: 'GNU Bash Manual', sourceName: 'GNU Software Reference', url: 'https://www.gnu.org/software/bash/manual/' }
         ]
       },
