@@ -12,6 +12,12 @@ export interface UserDocument extends mongoose.Document {
   bio?: string;
   avatarUrl?: string;
   phone?: string;
+  goal?: {
+    careerId: string;
+    careerTitle?: string;
+    note?: string;
+    updatedAt?: Date;
+  };
 }
 
 const userSchema = new Schema<UserDocument>(
@@ -26,7 +32,13 @@ const userSchema = new Schema<UserDocument>(
     displayName: { type: String, trim: true },
     bio: { type: String, maxlength: 200 },
     avatarUrl: { type: String },
-    phone: { type: String, trim: true }
+    phone: { type: String, trim: true },
+    goal: {
+      careerId: { type: String, trim: true },
+      careerTitle: { type: String, trim: true },
+      note: { type: String, trim: true, maxlength: 300 },
+      updatedAt: { type: Date }
+    }
   },
   { timestamps: true }
 );
