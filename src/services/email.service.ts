@@ -1,6 +1,8 @@
 import nodemailer from 'nodemailer';
 import { env } from '../config/env';
 
+const isSmtpConfigured = Boolean(env.smtpHost && env.smtpUser && env.smtpPass && env.emailFrom);
+
 const transporter = nodemailer.createTransport({
   host: env.smtpHost,
   port: env.smtpPort,
@@ -12,6 +14,12 @@ const transporter = nodemailer.createTransport({
 });
 
 export const sendEmail = async (to: string, subject: string, html: string) => {
+  if (!isSmtpConfigured) {
+    const previewText = html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    console.warn(`[email skipped] ${subject} -> ${to}: ${previewText}`);
+    return;
+  }
+
   await transporter.sendMail({ from: env.emailFrom, to, subject, html });
 };
 
