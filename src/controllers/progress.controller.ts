@@ -1,9 +1,15 @@
 import { Request, Response } from 'express';
 import { UserProgressModel } from '../models/user-progress.model';
 import { CAREER_TOTAL_STEPS, CAREER_TITLES } from '../config/careers.config';
+import { roadmapCatalog } from '../data/roadmaps';
+
+const getCareerTotalSteps = (careerId: string): number => {
+  const roadmap = roadmapCatalog.find((item) => item.careerId === careerId);
+  return roadmap?.roadmapSteps.length ?? CAREER_TOTAL_STEPS[careerId] ?? 0;
+};
 
 export const calculatePercentage = (completedCount: number, careerId: string): number => {
-  const total = CAREER_TOTAL_STEPS[careerId];
+  const total = getCareerTotalSteps(careerId);
   if (!total || total === 0) {
     return 0;
   }
@@ -110,15 +116,16 @@ export const getUserDashboardData = async (req: Request, res: Response): Promise
     const careerPaths = Object.keys(CAREER_TOTAL_STEPS).map((cId) => {
       const dbProgress = progressList.find((p) => p.careerId === cId);
       const completedSteps = dbProgress ? dbProgress.completedSteps : [];
-      const percentage = dbProgress ? dbProgress.percentage : 0;
+      const percentage = calculatePercentage(completedSteps.length, cId);
       const isEnrolled = dbProgress ? dbProgress.isEnrolled : false;
+      const totalCount = getCareerTotalSteps(cId);
 
       return {
         careerId: cId,
         careerTitle: CAREER_TITLES[cId] || cId,
         percentage: percentage,
         completedCount: completedSteps.length,
-        totalCount: CAREER_TOTAL_STEPS[cId],
+        totalCount,
         completedSteps: completedSteps,
         isEnrolled: isEnrolled
       };
@@ -128,6 +135,23 @@ export const getUserDashboardData = async (req: Request, res: Response): Promise
     const overallCompletion = enrolledCareers.length > 0 
       ? Math.round(enrolledCareers.reduce((acc, curr) => acc + curr.percentage, 0) / enrolledCareers.length)
       : 0;
+    const inProgressItems = enrolledCareers.flatMap((career) => {
+      const roadmap = roadmapCatalog.find((item) => item.careerId === career.careerId);
+      const completedSet = new Set(career.completedSteps);
+
+      return (roadmap?.roadmapSteps ?? [])
+        .filter((step) => !completedSet.has(step.stepId))
+        .slice(0, 3)
+        .map((step) => ({
+          careerId: career.careerId,
+          careerTitle: career.careerTitle,
+          stepId: step.stepId,
+          title: step.title,
+          description: step.description,
+          order: step.order,
+          progressPercentage: career.percentage
+        }));
+    }).slice(0, 6);
 
     const history = [
       { date: 'Mon', completedCount: Math.min(1, careerPaths.reduce((acc, curr) => acc + curr.completedCount, 0)) },
@@ -144,7 +168,9 @@ export const getUserDashboardData = async (req: Request, res: Response): Promise
       data: {
         overallCompletion,
         careerPaths,
-        history
+        history,
+        inProgressItems,
+        latestUpload: null
       }
     });
   } catch (error) {

@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { env } from '../config/env';
 import { UserModel } from '../models/user.model';
 import { comparePassword, hashPassword } from '../utils/hash';
 import { signToken } from '../utils/jwt';
@@ -8,7 +9,10 @@ export const register = async (req: Request, res: Response) => {
   const { email, password } = req.body as { email: string; password: string };
   const user = await createUserWithOtp(email, password);
   if (!user) return res.status(409).json({ message: 'Email already exists' });
-  return res.status(201).json({ message: 'OTP has been sent to your email' });
+  return res.status(201).json({
+    message: 'OTP has been sent to your email',
+    ...(env.exposeDevTokens ? { otp: user.otpCode } : {})
+  });
 };
 
 export const verifyRegisterOtp = async (req: Request, res: Response) => {
@@ -37,8 +41,13 @@ export const login = async (req: Request, res: Response) => {
     return res.status(403).json({ message: 'Please verify your email first using register OTP' });
   }
 
-  await issueOtpForUser(String(user._id));
-  return res.status(202).json({ message: 'OTP has been sent to your email', requiresOtp: true, email: user.email });
+  const otpUser = await issueOtpForUser(String(user._id));
+  return res.status(202).json({
+    message: 'OTP has been sent to your email',
+    requiresOtp: true,
+    email: user.email,
+    ...(env.exposeDevTokens ? { otp: otpUser?.otpCode } : {})
+  });
 };
 
 export const verifyLoginOtp = async (req: Request, res: Response) => {
@@ -58,8 +67,11 @@ export const verifyLoginOtp = async (req: Request, res: Response) => {
 
 export const forgotPassword = async (req: Request, res: Response) => {
   const { email } = req.body as { email: string };
-  await issueResetToken(email);
-  return res.json({ message: 'Reset password token sent to your email' });
+  const user = await issueResetToken(email);
+  return res.json({
+    message: 'Reset password token sent to your email',
+    ...(env.exposeDevTokens ? { resetToken: user?.resetToken } : {})
+  });
 };
 
 export const resetPassword = async (req: Request, res: Response) => {

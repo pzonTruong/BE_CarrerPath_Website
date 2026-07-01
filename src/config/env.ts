@@ -18,6 +18,7 @@ export const env = {
   emailFrom: rawEnv.EMAIL_FROM ?? '',
   otpExpiresMinutes: Number(rawEnv.OTP_EXPIRES_MINUTES ?? 10),
   resetTokenExpiresMinutes: Number(rawEnv.RESET_TOKEN_EXPIRES_MINUTES ?? 15),
+  exposeDevTokens: rawEnv.EXPOSE_DEV_TOKENS === 'true' || rawEnv.NODE_ENV !== 'production',
   cloudinaryCloudName: rawEnv.CLOUDINARY_CLOUD_NAME,
   cloudinaryApiKey: rawEnv.CLOUDINARY_API_KEY,
   cloudinaryApiSecret: rawEnv.CLOUDINARY_API_SECRET
