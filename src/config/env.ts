@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 
-dotenv.config();
+dotenv.config({ override: true });
 
 const rawEnv = process.env as Record<string, string | undefined>;
 
@@ -21,7 +21,9 @@ export const env = {
   exposeDevTokens: rawEnv.EXPOSE_DEV_TOKENS === 'true' || rawEnv.NODE_ENV !== 'production',
   cloudinaryCloudName: rawEnv.CLOUDINARY_CLOUD_NAME,
   cloudinaryApiKey: rawEnv.CLOUDINARY_API_KEY,
-  cloudinaryApiSecret: rawEnv.CLOUDINARY_API_SECRET
+  cloudinaryApiSecret: rawEnv.CLOUDINARY_API_SECRET,
+  geminiApiKey: rawEnv.GEMINI_API_KEY ?? '',
+  geminiModel: rawEnv.GEMINI_MODEL ?? 'gemini-3.5-flash'
 };
 
 if (!env.mongoUri || !env.jwtSecret) {
