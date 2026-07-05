@@ -9,6 +9,7 @@ import { progressRouter } from './routes/progress.route';
 import { roadmapRouter } from './routes/roadmap.route';
 import { usersRouter } from './routes/users.route';
 import { testRouter } from './routes/test.route';
+import { quizRouter } from './routes/quiz.route';
 
 export const app = express();
 
@@ -37,6 +38,7 @@ app.use('/api/roadmaps', roadmapRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/progress', progressRouter);
 app.use('/api/test', testRouter);
+app.use('/api/quizzes', quizRouter);
 app.use(errorMiddleware);
 
 export default app;
