@@ -10,6 +10,7 @@ import { roadmapRouter } from './routes/roadmap.route';
 import { usersRouter } from './routes/users.route';
 import { testRouter } from './routes/test.route';
 import { quizRouter } from './routes/quiz.route';
+import { adminRouter } from './routes/admin.route';
 
 export const app = express();
 
@@ -39,6 +40,7 @@ app.use('/api/users', usersRouter);
 app.use('/api/progress', progressRouter);
 app.use('/api/test', testRouter);
 app.use('/api/quizzes', quizRouter);
+app.use('/api/admin', adminRouter);
 app.use(errorMiddleware);
 
 export default app;

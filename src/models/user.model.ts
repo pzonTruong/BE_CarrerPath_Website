@@ -18,6 +18,7 @@ export interface UserDocument extends mongoose.Document {
     note?: string;
     updatedAt?: Date;
   };
+  role: 'User' | 'Admin';
 }
 
 const userSchema = new Schema<UserDocument>(
@@ -38,7 +39,8 @@ const userSchema = new Schema<UserDocument>(
       careerTitle: { type: String, trim: true },
       note: { type: String, trim: true, maxlength: 300 },
       updatedAt: { type: Date }
-    }
+    },
+    role: { type: String, enum: ['User', 'Admin'], default: 'User' }
   },
   { timestamps: true }
 );
