@@ -24,3 +24,8 @@ adminRouter.get('/roadmaps', adminController.getRoadmaps);
 adminRouter.post('/roadmaps', adminController.createRoadmap);
 adminRouter.put('/roadmaps/:id', adminController.updateRoadmap);
 adminRouter.delete('/roadmaps/:id', adminController.deleteRoadmap);
+
+// Users
+adminRouter.get('/users', adminController.getUsers);
+adminRouter.put('/users/:id', adminController.updateUser);
+adminRouter.delete('/users/:id', adminController.deleteUser);

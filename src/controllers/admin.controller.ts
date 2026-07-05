@@ -2,6 +2,39 @@ import { Request, Response } from 'express';
 import { CareerModel } from '../models/career.model';
 import { SkillModel } from '../models/skill.model';
 import { RoadmapModel } from '../models/roadmap.model';
+import { UserModel } from '../models/user.model';
+
+// --- USER CRUD ---
+export const getUsers = async (req: Request, res: Response) => {
+  try {
+    const users = await UserModel.find().select('-password -otpCode -resetToken');
+    res.json(users);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const updateUser = async (req: Request, res: Response) => {
+  try {
+    // Only allow updating specific fields like role for security
+    const { role } = req.body;
+    const user = await UserModel.findByIdAndUpdate(req.params.id, { role }, { new: true }).select('-password -otpCode -resetToken');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json(user);
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+export const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const user = await UserModel.findByIdAndDelete(req.params.id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json({ message: 'User deleted successfully' });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 // --- CAREER CRUD ---
 export const getCareers = async (req: Request, res: Response) => {
