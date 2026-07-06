@@ -1,5 +1,17 @@
 import mongoose, { Schema } from 'mongoose';
 
+export interface PortfolioItem {
+  _id?: mongoose.Types.ObjectId;
+  title: string;
+  url?: string;
+  fileUrl?: string;
+  fileName?: string;
+  fileMimeType?: string;
+  filePublicId?: string;
+  fileResourceType?: 'image' | 'raw';
+  createdAt?: Date;
+}
+
 export interface UserDocument extends mongoose.Document {
   email: string;
   password: string;
@@ -19,7 +31,22 @@ export interface UserDocument extends mongoose.Document {
     updatedAt?: Date;
   };
   role: 'User' | 'Admin';
+  portfolios: PortfolioItem[];
 }
+
+const portfolioSchema = new Schema<PortfolioItem>(
+  {
+    title: { type: String, required: true, trim: true, maxlength: 120 },
+    url: { type: String, trim: true },
+    fileUrl: { type: String },
+    fileName: { type: String, trim: true },
+    fileMimeType: { type: String, trim: true },
+    filePublicId: { type: String, trim: true },
+    fileResourceType: { type: String, enum: ['image', 'raw'] },
+    createdAt: { type: Date, default: Date.now }
+  },
+  { _id: true }
+);
 
 const userSchema = new Schema<UserDocument>(
   {
@@ -40,7 +67,8 @@ const userSchema = new Schema<UserDocument>(
       note: { type: String, trim: true, maxlength: 300 },
       updatedAt: { type: Date }
     },
-    role: { type: String, enum: ['User', 'Admin'], default: 'User' }
+    role: { type: String, enum: ['User', 'Admin'], default: 'User' },
+    portfolios: { type: [portfolioSchema], default: [] }
   },
   { timestamps: true }
 );

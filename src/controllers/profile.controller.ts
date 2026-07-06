@@ -1,10 +1,21 @@
 import { Request, Response } from 'express';
 import { UserModel } from '../models/user.model';
-import { deleteImage, uploadImage } from '../services/cloudinary.service';
-import { UpdateProfileInput } from '../validators/profile.validator';
+import { deleteAsset, deleteImage, uploadImage, uploadPortfolioAsset } from '../services/cloudinary.service';
+import { CreatePortfolioInput, UpdatePortfolioInput, UpdateProfileInput } from '../validators/profile.validator';
 
 // Fields excluded from all profile responses
 const EXCLUDED_FIELDS = '-password -otpCode -otpExpiresAt -resetToken -resetTokenExpiresAt';
+const MOJIBAKE_PATTERN = /Ã|Â|Æ|Ä|áº|á»|â/;
+
+const normalizeUploadedFileName = (fileName: string) => {
+  if (!MOJIBAKE_PATTERN.test(fileName)) return fileName;
+
+  try {
+    return Buffer.from(fileName, 'latin1').toString('utf8');
+  } catch {
+    return fileName;
+  }
+};
 
 export const updateProfile = async (req: Request, res: Response) => {
   const userId = req.user?.sub;
@@ -46,4 +57,108 @@ export const uploadAvatar = async (req: Request, res: Response) => {
 
   const updated = await UserModel.findById(userId).select(EXCLUDED_FIELDS);
   return res.json({ avatarUrl: url, publicId, user: updated });
+};
+
+export const createPortfolio = async (req: Request, res: Response) => {
+  const userId = req.user?.sub;
+  const { title, url } = req.body as CreatePortfolioInput;
+
+  if (!url && !req.file) {
+    return res.status(400).json({ message: 'Provide a project URL or an image/PDF file' });
+  }
+
+  const user = await UserModel.findById(userId);
+  if (!user) return res.status(404).json({ message: 'User not found' });
+
+  const portfolio = {
+    title,
+    url,
+    createdAt: new Date(),
+    ...(req.file
+      ? {
+          fileName: normalizeUploadedFileName(req.file.originalname),
+          fileMimeType: req.file.mimetype
+        }
+      : {})
+  };
+
+  if (req.file) {
+    const uploaded = await uploadPortfolioAsset(req.file.buffer, 'portfolios', req.file.mimetype);
+    Object.assign(portfolio, {
+      fileUrl: uploaded.url,
+      filePublicId: uploaded.publicId,
+      fileResourceType: uploaded.resourceType
+    });
+  }
+
+  user.portfolios.unshift(portfolio);
+  await user.save();
+
+  const updated = await UserModel.findById(userId).select(EXCLUDED_FIELDS);
+  return res.status(201).json(updated);
+};
+
+export const updatePortfolio = async (req: Request, res: Response) => {
+  const userId = req.user?.sub;
+  const { portfolioId } = req.params;
+  const { title, url } = req.body as UpdatePortfolioInput;
+
+  const user = await UserModel.findById(userId);
+  if (!user) return res.status(404).json({ message: 'User not found' });
+
+  const portfolio = user.portfolios.find((item) => String(item._id) === portfolioId);
+  if (!portfolio) return res.status(404).json({ message: 'Portfolio item not found' });
+
+  if (!url && !req.file && !portfolio.fileUrl) {
+    return res.status(400).json({ message: 'Provide a project URL or an image/PDF file' });
+  }
+
+  const oldFilePublicId = portfolio.filePublicId;
+  const oldFileResourceType = portfolio.fileResourceType;
+
+  portfolio.title = title;
+  portfolio.url = url;
+
+  if (req.file) {
+    const uploaded = await uploadPortfolioAsset(req.file.buffer, 'portfolios', req.file.mimetype);
+    portfolio.fileUrl = uploaded.url;
+    portfolio.fileName = normalizeUploadedFileName(req.file.originalname);
+    portfolio.fileMimeType = req.file.mimetype;
+    portfolio.filePublicId = uploaded.publicId;
+    portfolio.fileResourceType = uploaded.resourceType;
+  }
+
+  await user.save();
+
+  if (req.file && oldFilePublicId) {
+    await deleteAsset(oldFilePublicId, oldFileResourceType).catch(() => {
+      // Non-fatal: old asset cleanup should not block profile updates
+    });
+  }
+
+  const updated = await UserModel.findById(userId).select(EXCLUDED_FIELDS);
+  return res.json(updated);
+};
+
+export const deletePortfolio = async (req: Request, res: Response) => {
+  const userId = req.user?.sub;
+  const { portfolioId } = req.params;
+
+  const user = await UserModel.findById(userId);
+  if (!user) return res.status(404).json({ message: 'User not found' });
+
+  const portfolio = user.portfolios.find((item) => String(item._id) === portfolioId);
+  if (!portfolio) return res.status(404).json({ message: 'Portfolio item not found' });
+
+  user.portfolios = user.portfolios.filter((item) => String(item._id) !== portfolioId);
+  await user.save();
+
+  if (portfolio.filePublicId) {
+    await deleteAsset(portfolio.filePublicId, portfolio.fileResourceType).catch(() => {
+      // Non-fatal: stale Cloudinary assets should not block deleting the profile item
+    });
+  }
+
+  const updated = await UserModel.findById(userId).select(EXCLUDED_FIELDS);
+  return res.json(updated);
 };
