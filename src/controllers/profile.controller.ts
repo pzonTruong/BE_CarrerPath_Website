@@ -162,3 +162,51 @@ export const deletePortfolio = async (req: Request, res: Response) => {
   const updated = await UserModel.findById(userId).select(EXCLUDED_FIELDS);
   return res.json(updated);
 };
+
+export const uploadCv = async (req: Request, res: Response) => {
+  const userId = req.user?.sub;
+
+  if (!req.file) return res.status(400).json({ message: 'No file provided' });
+
+  const user = await UserModel.findById(userId);
+  if (!user) return res.status(404).json({ message: 'User not found' });
+
+  // Delete old CV from Cloudinary if it exists
+  if (user.cvPublicId) {
+    await deleteAsset(user.cvPublicId, user.cvResourceType || 'raw').catch(() => {
+      // Non-fatal: old asset cleanup failure should not block the upload
+    });
+  }
+
+  const uploaded = await uploadPortfolioAsset(req.file.buffer, 'cvs', req.file.mimetype);
+  user.cvUrl = uploaded.url;
+  user.cvName = normalizeUploadedFileName(req.file.originalname);
+  user.cvPublicId = uploaded.publicId;
+  user.cvResourceType = uploaded.resourceType;
+  await user.save();
+
+  const updated = await UserModel.findById(userId).select(EXCLUDED_FIELDS);
+  return res.json({ cvUrl: uploaded.url, cvName: user.cvName, user: updated });
+};
+
+export const deleteCv = async (req: Request, res: Response) => {
+  const userId = req.user?.sub;
+
+  const user = await UserModel.findById(userId);
+  if (!user) return res.status(404).json({ message: 'User not found' });
+
+  if (user.cvPublicId) {
+    await deleteAsset(user.cvPublicId, user.cvResourceType || 'raw').catch(() => {
+      // Non-fatal: old asset cleanup failure should not block deleting the CV
+    });
+  }
+
+  user.cvUrl = undefined;
+  user.cvName = undefined;
+  user.cvPublicId = undefined;
+  user.cvResourceType = undefined;
+  await user.save();
+
+  const updated = await UserModel.findById(userId).select(EXCLUDED_FIELDS);
+  return res.json(updated);
+};

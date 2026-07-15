@@ -24,6 +24,10 @@ export interface UserDocument extends mongoose.Document {
   bio?: string;
   avatarUrl?: string;
   phone?: string;
+  cvUrl?: string;
+  cvName?: string;
+  cvPublicId?: string;
+  cvResourceType?: 'image' | 'raw';
   goal?: {
     careerId: string;
     careerTitle?: string;
@@ -61,6 +65,10 @@ const userSchema = new Schema<UserDocument>(
     bio: { type: String, maxlength: 200 },
     avatarUrl: { type: String },
     phone: { type: String, trim: true },
+    cvUrl: { type: String },
+    cvName: { type: String },
+    cvPublicId: { type: String },
+    cvResourceType: { type: String, enum: ['image', 'raw'] },
     goal: {
       careerId: { type: String, trim: true },
       careerTitle: { type: String, trim: true },

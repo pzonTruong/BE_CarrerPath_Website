@@ -5,7 +5,9 @@ import {
   deletePortfolio,
   updatePortfolio,
   updateProfile,
-  uploadAvatar
+  uploadAvatar,
+  uploadCv,
+  deleteCv
 } from '../controllers/profile.controller';
 import { authGuard } from '../middlewares/auth.middleware';
 import { validateBody } from '../middlewares/validate.middleware';
@@ -39,6 +41,18 @@ const portfolioUpload = multer({
   },
 });
 
+const cvUpload = multer({
+  storage: memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
+  fileFilter: (_req, file, cb) => {
+    if (file.mimetype === 'application/pdf') {
+      cb(null, true);
+    } else {
+      cb(new Error('Only PDF files are allowed'));
+    }
+  },
+});
+
 profileRouter.patch('/', authGuard, validateBody(updateProfileSchema), updateProfile);
 profileRouter.post('/avatar', authGuard, upload.single('avatar'), uploadAvatar);
 profileRouter.post(
@@ -56,3 +70,5 @@ profileRouter.patch(
   updatePortfolio
 );
 profileRouter.delete('/portfolios/:portfolioId', authGuard, deletePortfolio);
+profileRouter.post('/cv', authGuard, cvUpload.single('cv'), uploadCv);
+profileRouter.delete('/cv', authGuard, deleteCv);
