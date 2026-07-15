@@ -3,6 +3,7 @@ import { TestHistoryModel } from '../models/test-history.model';
 import { UserProgressModel } from '../models/user-progress.model';
 import { calculatePercentage } from './progress.controller';
 import { QuizQuestionModel } from '../models/quiz-question.model';
+import { getPersonalizedLearningPath, type QuizAnswerReview } from '../services/gemini.service';
 
 const PASSING_SCORE_PERCENTAGE = 80;
 
@@ -58,15 +59,33 @@ export const submitQuiz = async (req: Request, res: Response): Promise<any> => {
 
     const totalQuestions = dbQuestions.length;
     let score = 0;
+    const wrongAnswers: QuizAnswerReview[] = [];
 
     dbQuestions.forEach(q => {
       if (answers[q.id] === q.correctAnswerIndex) {
         score++;
+        return;
       }
+
+      const selectedAnswerIndex = answers[q.id];
+      wrongAnswers.push({
+        question: q.questionText,
+        selectedAnswer: typeof selectedAnswerIndex === 'number' ? q.options[selectedAnswerIndex] ?? 'No answer' : 'No answer',
+        correctAnswer: q.options[q.correctAnswerIndex] ?? 'Unknown',
+        difficulty: q.difficulty
+      });
     });
 
     const percentageScore = (score / totalQuestions) * 100;
     const passed = percentageScore >= PASSING_SCORE_PERCENTAGE;
+    const learningPath = await getPersonalizedLearningPath({
+      careerId,
+      stepId,
+      score,
+      totalQuestions,
+      percentageScore,
+      wrongAnswers
+    });
 
     // Save test history
     await TestHistoryModel.create({
@@ -78,6 +97,11 @@ export const submitQuiz = async (req: Request, res: Response): Promise<any> => {
       passed,
       answersData: answers
     });
+
+    const quizHistory = await TestHistoryModel.find({ userId, careerId, stepId })
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .lean();
 
     let progressData = null;
 
@@ -111,12 +135,62 @@ export const submitQuiz = async (req: Request, res: Response): Promise<any> => {
         score,
         totalQuestions,
         percentageScore,
-        progressUpdated: passed ? progressData : null
+        progressUpdated: passed ? progressData : null,
+        learningPath,
+        quizHistory: quizHistory.map((item) => ({
+          id: item._id.toString(),
+          score: item.score,
+          totalQuestions: item.totalQuestions,
+          percentageScore: (item.score / item.totalQuestions) * 100,
+          passed: item.passed,
+          createdAt: item.createdAt
+        }))
       }
     });
 
   } catch (error) {
     console.error('Submit quiz error:', error);
+    return res.status(500).json({ message: 'Internal Server Error', error });
+  }
+};
+
+export const getQuizHistory = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const userId = req.user?.sub;
+    const { careerId, stepId } = req.query;
+
+    if (!userId) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const filter: Record<string, unknown> = { userId };
+    if (typeof careerId === 'string' && careerId.trim()) {
+      filter.careerId = careerId;
+    }
+    if (typeof stepId === 'string' && stepId.trim()) {
+      filter.stepId = stepId;
+    }
+
+    const history = await TestHistoryModel.find(filter)
+      .sort({ createdAt: -1 })
+      .limit(20)
+      .lean();
+
+    return res.status(200).json({
+      success: true,
+      data: history.map((item) => ({
+        id: item._id.toString(),
+        careerId: item.careerId,
+        stepId: item.stepId,
+        score: item.score,
+        totalQuestions: item.totalQuestions,
+        percentageScore: (item.score / item.totalQuestions) * 100,
+        passed: item.passed,
+        createdAt: item.createdAt
+      }))
+    });
+  } catch (error) {
+    console.error('Get quiz history error:', error);
     return res.status(500).json({ message: 'Internal Server Error', error });
   }
 };
