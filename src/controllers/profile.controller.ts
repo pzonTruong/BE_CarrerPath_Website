@@ -19,11 +19,11 @@ const normalizeUploadedFileName = (fileName: string) => {
 
 export const updateProfile = async (req: Request, res: Response) => {
   const userId = req.user?.sub;
-  const { displayName, bio, phone } = req.body as UpdateProfileInput;
+  const { displayName, bio, phone, enableStudyReminder } = req.body as UpdateProfileInput;
 
   const user = await UserModel.findByIdAndUpdate(
     userId,
-    { displayName, bio, phone },
+    { displayName, bio, phone, enableStudyReminder },
     { new: true, runValidators: true }
   ).select(EXCLUDED_FIELDS);
 
