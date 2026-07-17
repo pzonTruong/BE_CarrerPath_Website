@@ -8,7 +8,8 @@ const emptyStringToUndefined = (value: unknown) => {
 export const updateProfileSchema = z.object({
   displayName: z.string().trim().min(1).max(100).optional(),
   bio: z.string().trim().max(200).optional(),
-  phone: z.string().trim().min(7).max(20).optional()
+  phone: z.string().trim().min(7).max(20).optional(),
+  enableStudyReminder: z.boolean().optional()
 });
 
 export const createPortfolioSchema = z.object({

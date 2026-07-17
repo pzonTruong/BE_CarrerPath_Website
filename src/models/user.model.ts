@@ -36,6 +36,8 @@ export interface UserDocument extends mongoose.Document {
   };
   role: 'User' | 'Admin';
   portfolios: PortfolioItem[];
+  lastActive?: Date;
+  enableStudyReminder?: boolean;
 }
 
 const portfolioSchema = new Schema<PortfolioItem>(
@@ -76,9 +78,12 @@ const userSchema = new Schema<UserDocument>(
       updatedAt: { type: Date }
     },
     role: { type: String, enum: ['User', 'Admin'], default: 'User' },
-    portfolios: { type: [portfolioSchema], default: [] }
+    portfolios: { type: [portfolioSchema], default: [] },
+    lastActive: { type: Date, default: Date.now },
+    enableStudyReminder: { type: Boolean, default: false }
   },
   { timestamps: true }
 );
 
 export const UserModel = mongoose.model<UserDocument>('User', userSchema);
+
