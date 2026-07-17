@@ -12,6 +12,9 @@ export const adminRouter = Router();
 // Protect all admin routes
 adminRouter.use(adminGuard);
 
+// Stats
+adminRouter.get('/stats', adminController.getStats);
+
 // Careers
 adminRouter.get('/careers', adminController.getCareers);
 adminRouter.post('/careers', adminController.createCareer);

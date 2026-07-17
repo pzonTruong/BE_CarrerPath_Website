@@ -3,6 +3,8 @@ import { CareerModel } from '../models/career.model';
 import { SkillModel } from '../models/skill.model';
 import { RoadmapModel } from '../models/roadmap.model';
 import { UserModel } from '../models/user.model';
+import { UserProgressModel } from '../models/user-progress.model';
+import { ResourceModel } from '../models/resource.model';
 
 // --- USER CRUD ---
 export const getUsers = async (req: Request, res: Response) => {
@@ -152,6 +154,58 @@ export const deleteRoadmap = async (req: Request, res: Response) => {
     if (!roadmap) return res.status(404).json({ message: 'Roadmap not found' });
     res.json({ message: 'Roadmap deleted successfully' });
   } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getStats = async (req: Request, res: Response) => {
+  try {
+    const [totalUsers, totalCareers, totalSkills, totalResources] = await Promise.all([
+      UserModel.countDocuments(),
+      CareerModel.countDocuments(),
+      SkillModel.countDocuments(),
+      ResourceModel.countDocuments()
+    ]);
+
+    const careerDistribution = await UserProgressModel.aggregate([
+      {
+        $group: {
+          _id: '$careerId',
+          value: { $sum: 1 }
+        }
+      },
+      {
+        $lookup: {
+          from: 'careers',
+          localField: '_id',
+          foreignField: 'careerId',
+          as: 'careerInfo'
+        }
+      },
+      {
+        $unwind: {
+          path: '$careerInfo',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          name: { $ifNull: ['$careerInfo.title', 'Unknown'] },
+          value: 1
+        }
+      }
+    ]);
+
+    res.json({
+      totalUsers,
+      totalCareers,
+      totalSkills,
+      totalResources,
+      careerDistribution
+    });
+  } catch (error: any) {
+    console.error('Failed to fetch admin stats:', error);
     res.status(500).json({ message: error.message });
   }
 };
