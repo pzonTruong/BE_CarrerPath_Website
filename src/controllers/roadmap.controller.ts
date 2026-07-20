@@ -6,6 +6,11 @@ const normalizeRoadmap = (roadmap: (typeof roadmapCatalog)[number]) => ({
   id: roadmap.careerId,
   careerTitle: roadmap.careerTitle,
   description: roadmap.description,
+  category: 'category' in roadmap ? roadmap.category : undefined,
+  difficulty: 'difficulty' in roadmap ? roadmap.difficulty : undefined,
+  duration: 'duration' in roadmap ? roadmap.duration : undefined,
+  outcome: 'outcome' in roadmap ? roadmap.outcome : undefined,
+  portfolioOutcome: 'portfolioOutcome' in roadmap ? roadmap.portfolioOutcome : undefined,
   skills: roadmap.skills,
   roadmapSteps: roadmap.roadmapSteps
     .slice()
