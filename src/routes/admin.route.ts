@@ -39,6 +39,7 @@ adminRouter.put('/users/:id', adminController.updateUser);
 adminRouter.delete('/users/:id', adminController.deleteUser);
 
 // Career Paths (New Hierarchical Design)
+adminRouter.post('/career-paths/seed', careerPathController.seedCareerPaths);
 adminRouter.get('/career-paths', careerPathController.getCareerPaths);
 adminRouter.get('/career-paths/:id', careerPathController.getCareerPathById);
 adminRouter.post('/career-paths', validateBody(createCareerPathSchema), careerPathController.createCareerPath);

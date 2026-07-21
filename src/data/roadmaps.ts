@@ -8,50 +8,86 @@ export const roadmapCatalog = [
     duration: '10-12 weeks',
     outcome: 'Responsive React portfolio',
     portfolioOutcome: 'A responsive React app with routing, API integration, and polished UI states.',
-    skills: ['HTML', 'CSS', 'JavaScript', 'TypeScript', 'React', 'Vite', 'Tailwind CSS'],
+    skills: ['HTML', 'CSS', 'JavaScript', 'Tailwind CSS', 'TypeScript', 'Vite', 'React', 'Zustand'],
     roadmapSteps: [
       {
         stepId: 'fe-internet',
-        title: 'Internet & Web Protocols',
-        description: 'Understand DNS, hosting, client-server models, and secure HTTP request lifecycles.',
+        title: '1. Internet & Web Protocols',
+        description: 'Understand the fundamental architecture of the web: DNS servers, domain hosting, client-server models, and secure HTTP request lifecycles.',
         order: 1,
-        subtopics: ['DNS & Name Servers', 'HTTP Requests & Response Codes', 'Domain Registration & Hosting Models'],
+        subtopics: ['DNS & Name Servers', 'HTTP/HTTPS Requests & Response Codes', 'Domain Registration & Hosting Models'],
         externalResources: [
-          { title: 'Frontend Developer Roadmap', sourceName: 'roadmap.sh', url: 'https://roadmap.sh/frontend' },
-          { title: 'How the Web Works', sourceName: 'MDN Web Docs', url: 'https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/How_the_Web_works' },
-          { title: 'HTTP Overview and Specifications', sourceName: 'MDN Web Docs', url: 'https://developer.mozilla.org/en-US/docs/Web/HTTP' }
+          { title: 'How the Web Works', sourceName: 'MDN Web Docs', url: 'https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/How_the_Web_works' }
         ]
       },
       {
         stepId: 'fe-html-css',
-        title: 'HTML & CSS Layout Architecture',
-        description: 'Construct semantic pages and responsive layouts using Grid and Flexbox.',
+        title: '2. HTML & CSS Layout Architecture',
+        description: 'Construct pages using semantic tags and style them using modern layout engines like Grid and Flexbox for responsive designs.',
         order: 2,
         subtopics: ['Semantic markup systems', 'CSS Flexbox alignment model', 'CSS Grid template specifications'],
         externalResources: [
-          { title: 'CSS Grid Guide', sourceName: 'CSS-Tricks Documentation', url: 'https://css-tricks.com/snippets/css/complete-guide-grid/' },
-          { title: 'HTML Living Standard Spec', sourceName: 'WHATWG HTML Reference', url: 'https://html.spec.whatwg.org/' }
+          { title: 'CSS Grid Guide', sourceName: 'CSS-Tricks Documentation', url: 'https://css-tricks.com/snippets/css/complete-guide-grid/' }
         ]
       },
       {
         stepId: 'fe-javascript',
-        title: 'Asynchronous JavaScript & DOM',
-        description: 'Learn ES6+ runtime mechanics, async flows, and DOM event bindings.',
+        title: '3. Asynchronous JavaScript & DOM',
+        description: 'Learn modern ES6+ runtime mechanics, asynchronous flows via Promises and async-await, and DOM event bindings.',
         order: 3,
         subtopics: ['ESNext modules and lexical scoping', 'Event Loop mechanics', 'Promises, microtasks, and async actions'],
         externalResources: [
-          { title: 'Modern JS Tutorial', sourceName: 'JavaScript.info Guide', url: 'https://javascript.info/' },
-          { title: 'Fetch API and Request Specifications', sourceName: 'WHATWG Fetch Standard', url: 'https://fetch.spec.whatwg.org/' }
+          { title: 'Modern JS Tutorial', sourceName: 'JavaScript.info Guide', url: 'https://javascript.info/' }
+        ]
+      },
+      {
+        stepId: 'fe-css-frameworks',
+        title: '4. CSS Frameworks & Tailwind',
+        description: 'Master modern responsive layout styles using Tailwind CSS utility classes and design system custom tokens.',
+        order: 4,
+        subtopics: ['Tailwind CSS core styles', 'Utility-first design concept', 'Responsive grid configurations'],
+        externalResources: [
+          { title: 'Tailwind CSS Reference Docs', sourceName: 'TailwindCSS Official Guide', url: 'https://tailwindcss.com/docs' }
+        ]
+      },
+      {
+        stepId: 'fe-typescript',
+        title: '5. TypeScript & Structural Typing',
+        description: 'Bring compile-time type safety to your JavaScript projects by declaring type interfaces, unions, and generics.',
+        order: 5,
+        subtopics: ['Type interfaces vs Types alias', 'Generics and custom types', 'Configuring tsconfig files'],
+        externalResources: [
+          { title: 'TypeScript Handbook', sourceName: 'TypeScriptLang Reference Docs', url: 'https://www.typescriptlang.org/docs/' }
+        ]
+      },
+      {
+        stepId: 'fe-build-tools',
+        title: '6. Build Tools & Bundlers',
+        description: 'Compile, bundle, and hot-reload front-end applications efficiently using modern build bundlers.',
+        order: 6,
+        subtopics: ['Vite configuration and plugins', 'npm/pnpm package dependency maps', 'Hot Module Replacement mechanics'],
+        externalResources: [
+          { title: 'Vite Official Guide', sourceName: 'ViteJS Documentation', url: 'https://vite.dev/guide/' }
         ]
       },
       {
         stepId: 'fe-react',
-        title: 'React Framework & Hook Models',
-        description: 'Implement modular user interfaces using component-driven declarative design.',
-        order: 4,
-        subtopics: ['Fiber reconciler cycle', 'Hook flows', 'Local and global state management'],
+        title: '7. React Framework & Hook Models',
+        description: 'Implement complex modular user interfaces using component-driven declarative design, rendering cycles, and state variables.',
+        order: 7,
+        subtopics: ['Fiber reconciler cycle', 'Hook flows (useState, useEffect, useMemo)', 'Local and state management contexts'],
         externalResources: [
           { title: 'React Developer Documentation', sourceName: 'React.dev Reference', url: 'https://react.dev/' }
+        ]
+      },
+      {
+        stepId: 'fe-state-management',
+        title: '8. State Management & Clients',
+        description: 'Manage shared application state globally and sync it using lightweight modular stores and custom clients.',
+        order: 8,
+        subtopics: ['Zustand state store design', 'Axios http interceptors configuration', 'React Context API constraints'],
+        externalResources: [
+          { title: 'Zustand Documentation', sourceName: 'Zustand GitHub Docs', url: 'https://zustand.docs.pmnd.rs/getting-started/introduction' }
         ]
       }
     ]
@@ -59,29 +95,28 @@ export const roadmapCatalog = [
   {
     careerId: 'backend',
     careerTitle: 'Backend Developer',
-    description: 'Learn to design APIs, structure databases, write business logic, and handle scaling.',
+    description: 'Learn to design APIs, structure relational/non-relational databases, write business logic, and handle scaling.',
     category: 'Engineering',
     difficulty: 'Intermediate',
     duration: '12-14 weeks',
     outcome: 'Secure production API',
     portfolioOutcome: 'A documented REST API with authentication, database models, tests, and deployment notes.',
-    skills: ['Node.js', 'Express', 'SQL', 'MongoDB', 'REST APIs', 'JWT Security', 'Docker'],
+    skills: ['Node.js', 'Express', 'PostgreSQL', 'MongoDB', 'JWT Security', 'Redis', 'Jest', 'Docker'],
     roadmapSteps: [
       {
         stepId: 'be-runtime',
-        title: 'JavaScript Runtime (Node.js)',
-        description: 'Write server-side JavaScript using Node.js runtime, filesystem utilities, and packages.',
+        title: '1. JavaScript Runtime (Node.js)',
+        description: 'Understand writing server-side JavaScript using the Node.js runtime environment, filesystem utilities, and package dependencies.',
         order: 1,
         subtopics: ['Event-driven asynchronous I/O', 'Node Package Manager syntax', 'Environment configurations'],
         externalResources: [
-          { title: 'Backend Developer Roadmap', sourceName: 'roadmap.sh', url: 'https://roadmap.sh/backend' },
           { title: 'Node.js Developer Guide', sourceName: 'NodeJS.org Reference', url: 'https://nodejs.org/en/docs' }
         ]
       },
       {
         stepId: 'be-apis',
-        title: 'REST API Design & Routing',
-        description: 'Build endpoints using correct methods, payloads, status codes, and request parsers.',
+        title: '2. REST API Design & Routing',
+        description: 'Build endpoints using correct HTTP methods, payload formats, status codes, query strings, and request parsers.',
         order: 2,
         subtopics: ['REST architectural principles', 'Express routing and middleware configuration', 'JSON serialization'],
         externalResources: [
@@ -90,23 +125,62 @@ export const roadmapCatalog = [
       },
       {
         stepId: 'be-databases',
-        title: 'Relational Databases (PostgreSQL)',
-        description: 'Design tables, indexes, constraints, structured queries, and migrations.',
+        title: '3. Relational Databases (PostgreSQL)',
+        description: 'Design database tables, indexes, constraints, write structured queries, and handle migrations.',
         order: 3,
-        subtopics: ['Database normalization rules', 'SQL query join optimization', 'ACID transaction specifications'],
+        subtopics: ['Database normalization rules', 'SQL query join optimization', 'ACID transactions specifications'],
         externalResources: [
           { title: 'PostgreSQL Manuals', sourceName: 'PostgreSQL.org Reference Docs', url: 'https://www.postgresql.org/docs/' }
         ]
       },
       {
-        stepId: 'be-security',
-        title: 'API Authentication & Token Security',
-        description: 'Secure backend resources using JWT, secure storage, and request rate-limiting.',
+        stepId: 'be-nosql',
+        title: '4. NoSQL Databases (MongoDB)',
+        description: 'Structure unstructured datasets using document-based schemas and index mappings in Mongoose.',
         order: 4,
+        subtopics: ['Document vs Relational designs', 'Mongoose schema validations', 'Aggregate query structures'],
+        externalResources: [
+          { title: 'Mongoose Schema Reference Guide', sourceName: 'Mongoose Documentation', url: 'https://mongoosejs.com/docs/guide.html' }
+        ]
+      },
+      {
+        stepId: 'be-security',
+        title: '5. API Authentication & Token Security',
+        description: 'Secure backend resources using JSON Web Tokens (JWT), session cookies, secure storage, and request rate-limiting.',
+        order: 5,
         subtopics: ['JWT signature verification', 'CORS rules and cross-origin controls', 'Hash mechanisms for passwords'],
         externalResources: [
-          { title: 'JWT Introduction', sourceName: 'JWT.io Specs', url: 'https://jwt.io/introduction/' },
-          { title: 'OWASP Security Threat Checklist', sourceName: 'OWASP Security Foundation Docs', url: 'https://owasp.org/www-project-top-ten/' }
+          { title: 'JWT Introduction', sourceName: 'JWT.io Specs', url: 'https://jwt.io/introduction/' }
+        ]
+      },
+      {
+        stepId: 'be-caching',
+        title: '6. Caching & Performance',
+        description: 'Optimize resource intensive databases queries and decrease response latency using Redis key-value cache layer.',
+        order: 6,
+        subtopics: ['Redis data structures', 'Cache invalidation patterns', 'In-memory caching architectures'],
+        externalResources: [
+          { title: 'Redis Developers Hub', sourceName: 'Redis Official Tutorials', url: 'https://redis.io/docs/latest/develop/' }
+        ]
+      },
+      {
+        stepId: 'be-testing-docs',
+        title: '7. Testing & API Documentation',
+        description: 'Write automated unit and integration tests and expose interactive API schema definitions using Swagger.',
+        order: 7,
+        subtopics: ['Jest unit testing syntax', 'Supertest express endpoint mock assertions', 'Swagger Open API templates'],
+        externalResources: [
+          { title: 'Jest Documentation', sourceName: 'Jest Testing Official Docs', url: 'https://jestjs.io/docs/getting-started' }
+        ]
+      },
+      {
+        stepId: 'be-deployment',
+        title: '8. Process Management & Deployment',
+        description: 'Keep server runtimes running continuously using process supervisors and deploy isolated Docker containers.',
+        order: 8,
+        subtopics: ['PM2 daemon thread process management', 'Docker backend container configuration', 'Logging rotation patterns'],
+        externalResources: [
+          { title: 'PM2 Process Manager Quick Start', sourceName: 'PM2 Official Documentation', url: 'https://pm2.keymetrics.io/docs/usage/quick-start/' }
         ]
       }
     ]
@@ -114,53 +188,92 @@ export const roadmapCatalog = [
   {
     careerId: 'devops',
     careerTitle: 'DevOps Engineer',
-    description: 'Automate build pipelines, orchestrate containers, and manage cloud infrastructure reliably.',
+    description: 'Automate build pipelines, orchestrate container clusters, and manage cloud infrastructure reliably.',
     category: 'Infrastructure',
     difficulty: 'Advanced',
     duration: '14-16 weeks',
     outcome: 'Cloud deployment pipeline',
     portfolioOutcome: 'A containerized app with CI/CD, infrastructure notes, monitoring, and deployment runbook.',
-    skills: ['Linux Shell', 'Docker', 'CI/CD Pipelines', 'Kubernetes', 'AWS Services', 'Nginx Configuration'],
+    skills: ['Linux', 'Nginx', 'Docker', 'GitHub Actions', 'Kubernetes', 'Terraform', 'AWS', 'Prometheus'],
     roadmapSteps: [
       {
         stepId: 'do-linux',
-        title: 'Linux Systems & Shell Scripting',
-        description: 'Master Unix directories, process controls, permissions, diagnostics, and shell tools.',
+        title: '1. Linux Systems & Shell Scripting',
+        description: 'Master Unix directory architectures, process controls, user permissions, network diagnostics, and shell tools.',
         order: 1,
-        subtopics: ['POSIX standard commands', 'Bash script variables', 'SSH and key exchange methods'],
+        subtopics: ['POSIX standard commands', 'Bash scripts variables', 'SSH and keys exchange methods'],
         externalResources: [
-          { title: 'DevOps Roadmap', sourceName: 'roadmap.sh', url: 'https://roadmap.sh/devops' },
           { title: 'GNU Bash Manual', sourceName: 'GNU Software Reference', url: 'https://www.gnu.org/software/bash/manual/' }
         ]
       },
       {
-        stepId: 'do-containers',
-        title: 'Containerization (Docker)',
-        description: 'Isolate services into lightweight containers with performant build configurations.',
+        stepId: 'do-web-servers',
+        title: '2. Web Servers & Reverse Proxies',
+        description: 'Route client requests to internal networks and handle TLS termination setups on web reverse proxy systems.',
         order: 2,
-        subtopics: ['Layered filesystem builds', 'Multi-stage build optimizations', 'Network bridge specifications'],
+        subtopics: ['Nginx reverse proxy configurations', 'SSL certbot registration setups', 'Rate limit rules definitions'],
+        externalResources: [
+          { title: 'Nginx Beginner Guide', sourceName: 'Nginx Documentation Engine', url: 'http://nginx.org/en/docs/beginners_guide.html' }
+        ]
+      },
+      {
+        stepId: 'do-containers',
+        title: '3. Containerization (Docker)',
+        description: 'Isolate services into lightweight containers. Write custom configurations to compile performant containers.',
+        order: 3,
+        subtopics: ['Layered filesystem builds', 'Multi-stage builds optimizations', 'Network bridges specifications'],
         externalResources: [
           { title: 'Docker Guide and Reference Docs', sourceName: 'Docker Docs Manual', url: 'https://docs.docker.com/' }
         ]
       },
       {
         stepId: 'do-pipelines',
-        title: 'Continuous Integration & Pipelines',
-        description: 'Build pipelines that test, build, lint, and deploy code changes dynamically.',
-        order: 3,
-        subtopics: ['Pipeline trigger configuration', 'Cache dependency strategies', 'Deploy token storage'],
+        title: '4. Continuous Integration & Pipelines',
+        description: 'Build pipelines that test, build, lint, and deploy code changes dynamically to cluster instances.',
+        order: 4,
+        subtopics: ['Pipeline triggers configuration', 'Cache build dependencies strategies', 'Deploy tokens storage'],
         externalResources: [
           { title: 'GitHub Actions Documentation', sourceName: 'GitHub Documentation Reference', url: 'https://docs.github.com/en/actions' }
         ]
       },
       {
         stepId: 'do-k8s',
-        title: 'Container Orchestration (Kubernetes)',
-        description: 'Manage container clusters across networks with scalability and fault tolerance.',
-        order: 4,
+        title: '5. Container Orchestration (Kubernetes)',
+        description: 'Manage clusters of containers across distributed networks. Automate scalability and fault tolerance.',
+        order: 5,
         subtopics: ['Deployments, pods, and services mapping', 'ConfigMaps and Secrets mounting', 'Ingress controller systems'],
         externalResources: [
           { title: 'Kubernetes Overview and API Docs', sourceName: 'Kubernetes.io Specs', url: 'https://kubernetes.io/docs/home/' }
+        ]
+      },
+      {
+        stepId: 'do-iac',
+        title: '6. Infrastructure as Code (Terraform)',
+        description: 'Provision virtual resources in a descriptive syntax format, enabling repeatable server configurations.',
+        order: 6,
+        subtopics: ['Terraform providers parameters', 'State locking mechanisms', 'Resources modules nesting configurations'],
+        externalResources: [
+          { title: 'Terraform Introduction Tutorial', sourceName: 'HashiCorp Learn Docs', url: 'https://developer.hashicorp.com/terraform/intro' }
+        ]
+      },
+      {
+        stepId: 'do-cloud',
+        title: '7. Cloud Architecture (AWS)',
+        description: 'Architect networks, compute nodes, firewalls, and cloud storage pools within Amazon Web Services.',
+        order: 7,
+        subtopics: ['IAM security rules maps', 'VPC routing tables and subnets', 'EC2 and S3 storage instances'],
+        externalResources: [
+          { title: 'AWS Cloud Practitioner Basics', sourceName: 'AWS Documentation Hub', url: 'https://docs.aws.amazon.com/' }
+        ]
+      },
+      {
+        stepId: 'do-monitoring',
+        title: '8. Monitoring & Logging Analytics',
+        description: 'Track resource utilization rates and check error log indexes using Prometheus metric scraping servers.',
+        order: 8,
+        subtopics: ['PromQL query syntax patterns', 'Grafana dashboards telemetry integration', 'Alertmanager routes settings'],
+        externalResources: [
+          { title: 'Prometheus Introduction Guide', sourceName: 'Prometheus.io Official Manual', url: 'https://prometheus.io/docs/introduction/overview/' }
         ]
       }
     ]

@@ -1,5 +1,15 @@
 import { Request, Response } from 'express';
 import { CareerPathModel } from '../models/career-path.model';
+import { seedAllAdminData } from '../services/seed.service';
+
+export const seedCareerPaths = async (req: Request, res: Response) => {
+  try {
+    const result = await seedAllAdminData();
+    return res.json({ message: 'Career paths seeded successfully', ...result });
+  } catch (error: any) {
+    return res.status(500).json({ message: 'Internal server error', error: error.message });
+  }
+};
 
 export const createCareerPath = async (req: Request, res: Response) => {
   try {
